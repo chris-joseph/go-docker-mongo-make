@@ -9,7 +9,7 @@ type App struct{
 	server *echo.Echo
 }
 
-func new()*App  {
+func New()*App  {
 	server:=echo.New()
 
 	server.Use(middleware.Recover())
