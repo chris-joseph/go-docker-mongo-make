@@ -1,6 +1,7 @@
 package api
 
 import (
+
 	"github.com/chris-joseph/golang-ecs/pkg/config"
 	"github.com/chris-joseph/golang-ecs/pkg/data"
 	"github.com/chris-joseph/golang-ecs/pkg/services"
@@ -37,6 +38,17 @@ func (a App)ConfigureRoutes()  {
 	a.server.GET("/v1/public/healthy",a.HealthCheck)
 	a.server.GET("/v1/public/register",a.Register)
 	a.server.GET("/v1/public/login",a.Login)
+
+	protected:=a.server.Group("v1/api")
+
+	middleware:=Middleware{config: a.cfg}
+
+	protected.Use(middleware.Auth)
+
+	protected.GET("/secret",func(c echo.Context)error{
+		userId:=c.Get("user").(string)
+		return c.String(200,userId)
+	})
 }
 
 func (a App)Start(){
