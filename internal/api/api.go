@@ -36,8 +36,8 @@ func New(cfg *config.Settings,client *mongo.Client)*App  {
 
 func (a App)ConfigureRoutes()  {
 	a.server.GET("/v1/public/healthy",a.HealthCheck)
-	a.server.GET("/v1/public/register",a.Register)
-	a.server.GET("/v1/public/login",a.Login)
+	a.server.POST("/v1/public/register",a.Register)
+	a.server.POST("/v1/public/login",a.Login)
 
 	protected:=a.server.Group("v1/api")
 
