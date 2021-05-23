@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -82,6 +83,7 @@ func (u UserService)Login(user *domain.User) (string,*models.Error){
 	userFound,err:=u.userProvider.FindUserByName(user.UserName)
 
 		if err != nil {
+		fmt.Println(err)
 			return "",&models.Error{
 				Code: 500,
 				Name:"SERVER_ERROR",
@@ -110,6 +112,7 @@ func (u UserService)Login(user *domain.User) (string,*models.Error){
 		token,err:=u.CreateJWTToken(userFound.ID.Hex())
 
 		if err != nil {
+			fmt.Println(err)
 			return "",&models.Error{
 				Code: 500,
 				Name:"SERVER_ERROR",
@@ -147,7 +150,7 @@ func comparePassWordWithHash(password string,hash string) error {
 
 func (u UserService)CreateJWTToken(userID string) (string,error ) {
 
-	token := jwt.New(jwt.SigningMethodES256)
+	token := jwt.New(jwt.SigningMethodHS256)
 
 	expiresIn,err:=strconv.ParseInt(u.cfg.JwtExpires,10,64)
 
@@ -160,9 +163,10 @@ func (u UserService)CreateJWTToken(userID string) (string,error ) {
 
 	claims["id"]=userID
 
-	claims["exp"]=expiration
+	claims["exp"]=time.Now().Add(expiration).Unix()
 
 	t,err:=token.SignedString([]byte(u.cfg.JwtSecret))
+
 
 	if err != nil {
 		return "", errors.Wrap(err,"Error signing jwt token")

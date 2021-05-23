@@ -47,7 +47,7 @@ func ValidateRegisterRequest(c echo.Context) (*domain.User,*Error) {
 
 
 func ValidateLoginRequest(c echo.Context) (*domain.User,*Error) {
-	loginRequest := new(RegisterRequest)
+	loginRequest := new(LoginRequest)
 	if err := c.Bind(loginRequest);err!=nil {
 		return nil,BindError()
 	}

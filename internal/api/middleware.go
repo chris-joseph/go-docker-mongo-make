@@ -24,7 +24,8 @@ func (m Middleware)Auth(next echo.HandlerFunc)echo.HandlerFunc{
 			Exp int `json:"exp"`
 			jwt.StandardClaims
 		}
-		token,err:=jwt.ParseWithClaims(tokenString,&Claims{},func(token *jwt.Token)(interface{},error){
+	
+		token,err:=jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{},error){
 			return []byte(m.config.JwtSecret),nil	})
 			if err != nil {
 				fmt.Println(err)
@@ -35,6 +36,7 @@ func (m Middleware)Auth(next echo.HandlerFunc)echo.HandlerFunc{
 				c.Set("user",claims.Id)
 				return next(c)
 			}else{
+				fmt.Println(err)
 				return echo.ErrUnauthorized
 			}
 	}
